@@ -8,18 +8,100 @@ output:
 
 ## Loading and preprocessing the data
 
+First, the data is read from a CSV file called "activity.csv". Then date column is processed to a Date. A new column is created to determine the actual day of the week.  
 
+```{r reading-data}
+# Read data from file
+df <- read.csv("activity.csv")
+
+# Preprocess date column to Date format
+df$date <- as.Date(df$date, "%Y-%m-%d")
+
+# Determine the actual day of the week
+df$day <- weekdays(df$date)
+```
 
 ## What is mean total number of steps taken per day?
 
+2 steps will be done here:  
+a. Make a histogram of the total number of steps taken each day  
+b. Calculate and report the mean and median total number of steps taken per day  
 
+```{r mean-steps}
+library(dplyr)
+
+# Group data by date and total steps
+df1 <- df %>% group_by(date) %>% summarise(steps = sum(steps))
+
+# Make a histogram for total number of steps
+hist(df1$steps)
+
+# Find the mean and median for total number of steps
+mean(df1$steps, na.rm = T)
+median(df1$steps, na.rm = T)
+
+```
 
 ## What is the average daily activity pattern?
 
+In this section, a time series plot of 5-min intervals vs average number of steps taken will be plotted. From there, we will also find which 5-min interval has the highest maximum number of steps. In this case, it shows that the 835 interval has the highest number of steps of 206.  
 
+```{r}
+df2 <- na.omit(df)
+
+# Plot time series of 5-min interval vs. average number of steps taken
+df3 <- df2 %>% group_by(interval) %>% summarise(average = mean(steps))
+summary(df3)
+plot(df3$interval, df3$average, type = "l")
+
+# Find which 5-min interval has the highest/maximum number of steps
+df3$interval[which.max(df3$average)]
+```
 
 ## Imputing missing values
+
+There are a number of days/intervals where there are missing values. The presence of missing days may introduce bias into some calculations or summaries of the data. We will do a few things here to impute the missing values:  
+1. Calculate the number of missing values in the dataset - summary shows missing values are only found in steps. There are a stop of 2304 NAs in steps.
+2. Fill missing values with mean of 5-min interval.
+3. Create a new dataset with missing data filled.
+4. Make a histogram of steps taken each day.
+5. Calculate the mean and median of total number of steps taken per day
+
+```{r}
+library(dplyr)
+summary(df)
+
+# Calculate number of missing values in the dataset
+sum(is.na(df$steps))
+
+# Fill in missing values with mean of 5-min interval
+df4 <- df
+for (i in 1:nrow(df4)) {
+    if (is.na(df4$steps[i])) {
+        df4$steps[i] <- df3$average[df3$interval == df4$interval[i]]
+    }
+}
+
+# Checking for NAs in dataset
+summary(df4)
+df5 <- df4 %>% group_by(date) %>% summarise(steps = sum(steps))
+
+# Make a histogram for total number of steps
+hist(df5$steps)
+
+# Find the mean and median for total number of steps
+mean(df5$steps)
+median(df5$steps)
+```
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+library(lattice) 
+df4$daytype <- ifelse((df4$day == "Saturday" | df4$day == "Sunday"), "Weekend", "Weekday")
+df6 <- df4 %>% group_by(interval, daytype) %>% summarise(average = mean(steps))
+xyplot(average ~ interval | daytype, data = df6, type = "l", grid=T, layout=c(1,2))
+
+```
