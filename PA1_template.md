@@ -1,5 +1,6 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+date: 30-Dec-2023
 output: 
   html_document:
     keep_md: true
@@ -32,7 +33,26 @@ b. Calculate and report the mean and median total number of steps taken per day
 
 ```r
 library(dplyr)
+```
 
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 # Group data by date and total steps
 df1 <- df %>% group_by(date) %>% summarise(steps = sum(steps))
 
@@ -45,7 +65,7 @@ hist(df1$steps,
      col = "green")
 ```
 
-![plot of chunk mean-steps](figure/mean-steps-1.png)
+![](PA1_template_files/figure-html/mean-steps-1.png)<!-- -->
 
 ```r
 # Find the mean and median for total number of steps
@@ -99,7 +119,7 @@ plot(df3$interval, df3$average,
      col = "red")
 ```
 
-![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png)
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
 
 ```r
 # Find which 5-min interval has the highest/maximum number of steps
@@ -184,7 +204,7 @@ hist(df5$steps,
 )
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 ```r
 # Find the mean and median for total number of steps
@@ -220,7 +240,8 @@ df6 <- df4 %>% group_by(interval, daytype) %>% summarise(average = mean(steps))
 ```
 
 ```
-## `summarise()` has grouped output by 'interval'. You can override using the `.groups` argument.
+## `summarise()` has grouped output by 'interval'. You can override using the
+## `.groups` argument.
 ```
 
 ```r
@@ -235,6 +256,6 @@ xyplot(average ~ interval | daytype,
        main = "5-min intervals vs average number of steps taken")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 From the graph above, it can be seen that there is definitely a difference in activity pattenrs on weekdays and weekends.

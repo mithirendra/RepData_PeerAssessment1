@@ -1,10 +1,12 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+date: 30-Dec-2023
 output: 
   html_document:
     keep_md: true
 ---
 
+The following project is a Course Project 1 assignment for the Reproducible Research Module by John Hopkins University. This assignment will be described in multiple parts. We will need to write a report that answers the questions detailed below. Ultimately, we will need to complete the entire assignment in a single R markdown document that can be processed by knitr and be transformed into an HTML file.
 
 ## Loading and preprocessing the data
 
