@@ -34,7 +34,12 @@ library(dplyr)
 df1 <- df %>% group_by(date) %>% summarise(steps = sum(steps))
 
 # Make a histogram for total number of steps
-hist(df1$steps)
+hist(df1$steps,
+     breaks = 20,
+     xlab = "Day",
+     ylab = "Total number of steps taken per day",
+     main = "Total number of steps taken each day",
+     col = "green")
 
 # Find the mean and median for total number of steps
 mean(df1$steps, na.rm = T)
@@ -42,9 +47,12 @@ median(df1$steps, na.rm = T)
 
 ```
 
+Before the imputation of missing values, it can be seen that the mean and median values have a small difference between each other.
+
+
 ## What is the average daily activity pattern?
 
-In this section, a time series plot of 5-min intervals vs average number of steps taken will be plotted. From there, we will also find which 5-min interval has the highest maximum number of steps. In this case, it shows that the 835 interval has the highest number of steps of 206.  
+In this section, a time series plot of 5-min intervals vs average number of steps taken will be plotted. From there, we will also find which 5-min interval has the highest maximum number of steps. 
 
 ```{r}
 df2 <- na.omit(df)
@@ -52,11 +60,19 @@ df2 <- na.omit(df)
 # Plot time series of 5-min interval vs. average number of steps taken
 df3 <- df2 %>% group_by(interval) %>% summarise(average = mean(steps))
 summary(df3)
-plot(df3$interval, df3$average, type = "l")
+plot(df3$interval, df3$average, 
+     type = "l",
+     xlab = "5-min intervals",
+     ylab = "Average steps taken per interval",
+     main = "5-min intervals vs average number of steps taken",
+     col = "red")
 
 # Find which 5-min interval has the highest/maximum number of steps
 df3$interval[which.max(df3$average)]
 ```
+
+In the case above, it shows that the 835 interval has the highest number of steps of 206.  
+
 
 ## Imputing missing values
 
@@ -87,21 +103,42 @@ summary(df4)
 df5 <- df4 %>% group_by(date) %>% summarise(steps = sum(steps))
 
 # Make a histogram for total number of steps
-hist(df5$steps)
+hist(df5$steps,
+     breaks = 20,
+     xlab = "Day",
+     ylab = "Total number of steps taken per day",
+     main = "Total number of steps taken each day",
+     col = "orange"
+)
 
 # Find the mean and median for total number of steps
 mean(df5$steps)
 median(df5$steps)
 ```
 
+After the imputation of missing values, it can be seen that the mean and median values are very close and similar to each other in values.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+This sections tries to see if there is any difference in activity patterns between weekdays and weekends.
+1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+2. Make a panel plot containing a time series plot (i.e. type = "l" type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 ```{r}
 library(lattice) 
 df4$daytype <- ifelse((df4$day == "Saturday" | df4$day == "Sunday"), "Weekend", "Weekday")
 df6 <- df4 %>% group_by(interval, daytype) %>% summarise(average = mean(steps))
-xyplot(average ~ interval | daytype, data = df6, type = "l", grid=T, layout=c(1,2))
+xyplot(average ~ interval | daytype, 
+       data = df6, 
+       type = "l", 
+       grid=T, 
+       layout=c(1,2),
+       col = "blue",
+       xlab = "5-min intervals",
+       ylab = "Average steps taken per interval",
+       main = "5-min intervals vs average number of steps taken")
 
 ```
+
+From the graph above, it can be seen that there is definitely a difference in activity pattenrs on weekdays and weekends.
